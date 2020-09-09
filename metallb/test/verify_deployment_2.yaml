@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-verify
+  namespace: kube-verify
+  labels:
+    app: kube-verify
+spec:
+  replicas: 2 
+  selector:
+    matchLabels:
+      app: kube-verify
+  template:
+    metadata:
+      labels:
+        app: kube-verify
+    spec:
+      containers:
+      - name:  php-apache 
+        image: k8s.gcr.io/hpa-example 
+        ports:
+        - containerPort: 80

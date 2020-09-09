@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-apache
+spec:
+  selector:
+    matchLabels:
+      run: php-apache
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: php-apache
+    spec:
+      volumes:
+      - name: cache-volume
+        emptyDir: {}
+      initContainers:
+      - name: init-healthy
+        image: busybox:1.28
+        volumeMounts:
+        - mountPath: /cache
+          name: cache-volume
+        command: ['sh','-c', " touch /cache/healthy"] 
+      containers:
+      - name: php-apache
+        image: k8s.gcr.io/hpa-example
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+        volumeMounts:
+        - mountPath: /cache
+          name: cache-volume
+        readinessProbe:
+          exec:
+            command:
+            - cat
+            - /cache/healthy
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-apache
+  labels:
+    run: php-apache
+spec:
+  ports:
+  - port: 80
+  selector:
+    run: php-apache
