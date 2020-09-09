@@ -4,7 +4,7 @@ This repo contains sample source code for this book.
 
 You can buy this book at:
 
-https://www.amazon.com/dp/B08HQTM57
+https://www.amazon.com/dp/B08HQTM57N/
 
 
 ## Donation
